@@ -2,12 +2,12 @@
 
 <img src="https://i.imgur.com/w3Y8N5A.png" width="200" height="200" alt="VIP Survival Logo">
 
-# 👋 Hi, I'm RAK 
+# 👋 Hi, I'm Survive😅
 
 ### 🎵 Music Producer | 🤖 Discord Bot Developer | 💻 Open Source Creator
 
-[![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/yourserver)
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/codes.by.Survive)
+[![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)]([[https://discord.gg/sDAsajt4bP]
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/codesbySurvive)
 [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/@yourchannel)
 [![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/yourtwitter)
 
@@ -26,8 +26,8 @@
 - 🎵 High-Quality Music Player
 - 💰 Complete Economy & Leveling System
 
-[![Invite Bot](https://img.shields.io/badge/Invite_Bot-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=8&scope=bot%20applications.commands)
-[![View on GitHub](https://img.shields.io/badge/View_Code-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/codes.by.Survive/vip-survival-bot)
+[![Invite Bot](https://img.shields.io/badge/Invite_Bot-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/oauth2/authorize?client_id=1428067011635838986&permissions=8&scope=bot%20applications.commands)
+[![View on GitHub](https://img.shields.io/badge/View_Code-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/codesbySurvive/vip-survival-bot)
 [![Documentation](https://img.shields.io/badge/Docs-4A154B?style=for-the-badge&logo=readthedocs&logoColor=white)](https://vipsurvival.xyz/docs)
 
 ### 🎵 Music Production Projects
