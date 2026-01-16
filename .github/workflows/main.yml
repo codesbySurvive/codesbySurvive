@@ -1,0 +1,168 @@
+name: 🤖 VIP Survival Profile Auto-Update
+
+on:
+  # Schedule
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+    - cron: '0 12 * * *'   # Daily at 12 PM UTC
+  # Manual trigger
+  workflow_dispatch:
+  # Push trigger
+  push:
+    branches: [ main ]
+    paths:
+      - 'README.md'
+      - '.github/workflows/*.yml'
+
+# Repository permissions
+permissions:
+  contents: write
+
+jobs:
+  update-profile:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout repository
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # All history for stats
+          
+      # Step 2: Setup Node.js
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      # Step 3: Install dependencies if any
+      - name: 📦 Install dependencies
+        run: |
+          if [ -f "package.json" ]; then
+            npm ci
+          fi
+          
+      # Step 4: Update GitHub Activity Feed
+      - name: 📈 Update Activity Feed
+        uses: jamesgeorge007/github-activity-readme@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          COMMIT_MSG: '📊 Updated activity'
+          MAX_LINES: 8
+          EXCLUDE_TYPES: 'WatchEvent,IssueCommentEvent'
+          SHOW_TITLE: true
+          
+      # Step 5: Update GitHub Stats
+      - name: 📊 Update GitHub Stats
+        uses: anmol098/waka-readme-stats@master
+        with:
+          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+          COMMIT_MESSAGE: '📈 Updated coding stats'
+          SHOW_TITLE: false
+          LANG_COUNT: 8
+          TIME_RANGE: 'last_7_days'
+          
+      # Step 6: Update Profile Views Counter
+      - name: 👁️ Update Profile Views
+        run: |
+          # Get current views count
+          VIEWS=$(curl -s "https://komarev.com/ghpvc/?username=codes.by.Survive" | grep -o '[0-9,]*')
+          echo "Current views: $VIEWS"
+          
+          # Update in README if pattern exists
+          if grep -q "komarev.com/ghpvc" README.md; then
+            sed -i "s|https://komarev.com/ghpvc/?username=codes.by.Survive&[^)]*|https://komarev.com/ghpvc/?username=codes.by.Survive&label=Profile%20Views&color=blue&style=flat-square&updated=$(date +%s)|g" README.md
+          fi
+          
+      # Step 7: Update Timestamp
+      - name: ⏰ Update Timestamp
+        run: |
+          CURRENT_TIME=$(date '+%Y-%m-%d %H:%M:%S UTC')
+          LAST_UPDATE="**Last Updated:** $CURRENT_TIME"
+          
+          # Update timestamp in README
+          if grep -q "**Last Updated:**" README.md; then
+            sed -i "s|**Last Updated:**.*|$LAST_UPDATE|g" README.md
+          else
+            echo -e "\n\n---\n\n$LAST_UPDATE\n*Auto-updated by GitHub Actions*" >> README.md
+          fi
+          
+      # Step 8: Generate Recent Projects
+      - name: 🚀 Generate Recent Projects
+        run: |
+          echo "## 🎯 Recent Projects" > recent-projects.md
+          echo "" >> recent-projects.md
+          
+          # Get recent repos using GitHub API
+          REPOS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/users/codes.by.Survive/repos?sort=updated&per_page=5")
+          
+          echo "$REPOS" | jq -r '.[] | "### [\(.name)](\(.html_url))\n**Description:** \(.description // \"No description\")\n**Stars:** ⭐ \(.stargazers_count) | **Language:** \(.language)\n"' >> recent-projects.md
+          
+          # Insert into README
+          if grep -q "## 🎯 Recent Projects" README.md; then
+            sed -i '/## 🎯 Recent Projects/,/## 🛠️/{//!d}' README.md
+            sed -i '/## 🎯 Recent Projects/r recent-projects.md' README.md
+          fi
+          
+      # Step 9: Update Total Stats
+      - name: 📈 Update Total Stats
+        run: |
+          # Get user stats
+          USER_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/users/codes.by.Survive")
+            
+          REPOS=$(echo "$USER_DATA" | jq -r '.public_repos')
+          FOLLOWERS=$(echo "$USER_DATA" | jq -r '.followers')
+          FOLLOWING=$(echo "$USER_DATA" | jq -r '.following')
+          
+          # Create stats section
+          echo "## 📊 GitHub Stats" > stats-section.md
+          echo "" >> stats-section.md
+          echo "**Public Repos:** $REPOS | **Followers:** $FOLLOWERS | **Following:** $FOLLOWING" >> stats-section.md
+          echo "" >> stats-section.md
+          echo "![GitHub Stats](https://github-readme-stats.vercel.app/api?username=codes.by.Survive&show_icons=true&theme=radical&hide_border=true&count_private=true)" >> stats-section.md
+          echo "" >> stats-section.md
+          echo "![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=codes.by.Survive&layout=compact&theme=radical&hide_border=true&langs_count=8)" >> stats-section.md
+          echo "" >> stats-section.md
+          echo "![GitHub Streak](https://streak-stats.demolab.com/?user=codes.by.Survive&theme=radical&hide_border=true)" >> stats-section.md
+          
+          # Update in README
+          if grep -q "## 📊 GitHub Stats" README.md; then
+            sed -i '/## 📊 GitHub Stats/,/## 🎯 Recent Projects/{//!d}' README.md
+            sed -i '/## 📊 GitHub Stats/r stats-section.md' README.md
+          fi
+          
+      # Step 10: Commit and Push Changes
+      - name: 📤 Commit and Push
+        run: |
+          # Configure git
+          git config --local user.name "GitHub Actions Bot"
+          git config --local user.email "actions@github.com"
+          
+          # Add all changes
+          git add .
+          
+          # Check if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            # Commit changes
+            git commit -m "🤖 Auto-update: $(date '+%Y-%m-%d %H:%M:%S')"
+            
+            # Push changes
+            git push
+            echo "✅ Changes pushed successfully"
+          fi
+          
+      # Step 11: Send Discord Notification (Optional)
+      - name: 📨 Send Notification
+        if: success()
+        run: |
+          if [ -n "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+            curl -H "Content-Type: application/json" \
+              -d "{\"content\":\"✅ GitHub profile updated successfully!\\nhttps://github.com/codes.by.Survive\"}" \
+              ${{ secrets.DISCORD_WEBHOOK_URL }}
+          fi
