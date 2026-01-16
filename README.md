@@ -147,7 +147,7 @@ If you appreciate my projects:
 
 ### Thanks for visiting! ✨
 
-![Visitor Count](https://komarev.com/ghpvc/?username=codes.by.Survive&color=blue&style=flat-square&label=Profile+Views)
+![Visitor Count](https://komarev.com/ghpvc/?username=codesbySurvive&color=blue&style=flat-square&label=Profile+Views)
 
 **Check out my projects below ↓**
 
